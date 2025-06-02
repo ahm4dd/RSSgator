@@ -1,5 +1,7 @@
 import { exitCode } from "node:process";
 import { setUser } from "./config";
+import { createUser, getUserByName } from "./lib/db/queries/users";
+import { create } from "node:domain";
 
 export type CommandHandler = (
   cmdName: string,
@@ -16,6 +18,16 @@ export async function handlerLogin(cmdName: string, ...args: string[]) {
   }
   setUser(args[0]);
   console.log(`${args[0]} has been set`);
+}
+
+export async function handlerRegister(cmdName: string, ...args: string[]) {
+  if (args.length != 1 || args[0] === undefined) {
+    console.error(
+      "The register handler expects a single arguement, the username",
+    );
+    process.exit(1);
+  }
+  createUser(args[0]);
 }
 
 export function registerCommand(
