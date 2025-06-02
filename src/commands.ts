@@ -1,11 +1,11 @@
 import { setUser } from "./config";
 
-type CommandHandler = (cmdName: string, ...args: string[]) => void;
-type CommandsRegistry = {
+export type CommandHandler = (cmdName: string, ...args: string[]) => void;
+export type CommandsRegistry = {
   [key: string]: CommandHandler;
 };
 
-function handlerLogin(cmdName: string, ...args: string[]) {
+export function handlerLogin(cmdName: string, ...args: string[]) {
   if (args.length === 0) {
     throw new Error(
       "The login handler expects a single arguement, the username.",
@@ -15,14 +15,23 @@ function handlerLogin(cmdName: string, ...args: string[]) {
   console.log(`${args[0]} has been set`);
 }
 
-function registerCommand(
+export function registerCommand(
   registry: CommandsRegistry,
   cmdName: string,
   handler: CommandHandler,
-) {}
+) {
+  if (cmdName in registry) {
+    throw new Error(`${cmdName} already exists in the commands registry.`);
+  }
+  registry[cmdName] = handler;
+}
 
-function runCommand(
+export function runCommand(
   registry: CommandsRegistry,
   cmdName: string,
   ...args: string[]
-) {}
+) {
+  if (cmdName in registry) {
+    registry[cmdName](cmdName, ...args);
+  }
+}

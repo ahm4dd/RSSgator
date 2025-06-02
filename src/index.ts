@@ -1,8 +1,10 @@
-import { setUser, readConfig } from "./config";
+import process from "node:process";
+import { registerCommand, handlerLogin, runCommand } from "./commands";
+import { type CommandHandler, type CommandsRegistry } from "./commands";
 function main() {
-  setUser("ahm4dd");
-  let cfg = readConfig()!;
-  console.log(cfg);
+  const obj: CommandsRegistry = {};
+  obj["login"] = handlerLogin;
+  runCommand(obj, process.argv[2], process.argv[3]);
 }
 
 main();
