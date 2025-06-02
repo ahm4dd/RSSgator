@@ -1,39 +1,60 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import fs from "fs";
 import os from "os";
-import path from "node:path";
-export type Config = {
+import path from "path";
+
+type Config = {
   dbUrl: string;
   currentUserName: string;
 };
 
 export function setUser(userName: string) {
-  let cfg = readConfig();
-  if (cfg !== undefined) {
-    writeConfig({ dbUrl: cfg.dbUrl, currentUserName: userName });
+  const config = readConfig();
+  config.currentUserName = userName;
+  writeConfig(config);
+}
+
+function validateConfig(rawConfig: any) {
+  if (!rawConfig.db_url || typeof rawConfig.db_url !== "string") {
+    throw new Error("db_url is required in config file");
   }
-  writeConfig({ dbUrl: "postgres://example", currentUserName: userName });
-}
-
-export function readConfig(): Config | undefined {
-  let file = readFileSync(getConfigFilePath(), { encoding: "utf8" });
-  let cfg = JSON.parse(file);
-  if (validateConfig(cfg)) {
-    return { dbUrl: cfg.dbUrl, currentUserName: cfg.currentUserName };
+  if (
+    !rawConfig.current_user_name ||
+    typeof rawConfig.current_user_name !== "string"
+  ) {
+    throw new Error("current_user_name is required in config file");
   }
-  return undefined;
+
+  const config: Config = {
+    dbUrl: rawConfig.db_url,
+    currentUserName: rawConfig.current_user_name,
+  };
+
+  return config;
 }
 
-// Helper functions
+export function readConfig() {
+  const fullPath = getConfigFilePath();
 
-function getConfigFilePath(): string {
-  return path.join(os.homedir(), "/.gatorconfig.json");
+  const data = fs.readFileSync(fullPath, "utf-8");
+  const rawConfig = JSON.parse(data);
+
+  return validateConfig(rawConfig);
 }
 
-function writeConfig(cfg: Config) {
-  let writableCfg = JSON.stringify(cfg);
-  writeFileSync(getConfigFilePath(), writableCfg, { encoding: "utf8" });
+function getConfigFilePath() {
+  const configFileName = ".gatorconfig.json";
+  const homeDir = os.homedir();
+  return path.join(homeDir, configFileName);
 }
 
-function validateConfig(rawConfig: any): rawConfig is Config {
-  return "dbUrl" in rawConfig;
+function writeConfig(config: Config) {
+  const fullPath = getConfigFilePath();
+
+  const rawConfig = {
+    db_url: config.dbUrl,
+    current_user_name: config.currentUserName,
+  };
+
+  const data = JSON.stringify(rawConfig, null, 2);
+  fs.writeFileSync(fullPath, data, { encoding: "utf-8" });
 }
