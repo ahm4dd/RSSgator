@@ -1,7 +1,7 @@
 import process from "node:process";
 import { registerCommand, handlerLogin, runCommand } from "./commands";
 import { type CommandHandler, type CommandsRegistry } from "./commands";
-function main() {
+async function main() {
   const obj: CommandsRegistry = {};
   obj["login"] = handlerLogin;
   const args = process.argv.slice(2);
@@ -9,7 +9,8 @@ function main() {
     console.error("No arguements passed!");
     process.exit(1);
   }
-  runCommand(obj, args[0], args[1]);
+  await runCommand(obj, args[0], args[1]);
+  process.exit(0);
 }
 
 main();

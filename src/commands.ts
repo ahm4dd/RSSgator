@@ -1,10 +1,13 @@
 import { exitCode } from "node:process";
 import { setUser } from "./config";
 
-export type CommandHandler = (cmdName: string, ...args: string[]) => void;
+export type CommandHandler = (
+  cmdName: string,
+  ...args: string[]
+) => Promise<void>;
 export type CommandsRegistry = Record<string, CommandHandler>;
 
-export function handlerLogin(cmdName: string, ...args: string[]) {
+export async function handlerLogin(cmdName: string, ...args: string[]) {
   if (args.length != 1 || args[0] === undefined) {
     console.error(
       "The login handler expects a single arguement, the username.",
@@ -26,7 +29,7 @@ export function registerCommand(
   registry[cmdName] = handler;
 }
 
-export function runCommand(
+export async function runCommand(
   registry: CommandsRegistry,
   cmdName: string,
   ...args: string[]
