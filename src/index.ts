@@ -4,7 +4,12 @@ import { type CommandHandler, type CommandsRegistry } from "./commands";
 function main() {
   const obj: CommandsRegistry = {};
   obj["login"] = handlerLogin;
-  runCommand(obj, process.argv[2], process.argv[3]);
+  const args = process.argv.slice(2);
+  if (args.length == 0) {
+    console.error("No arguements passed!");
+    process.exit(1);
+  }
+  runCommand(obj, args[0], args[1]);
 }
 
 main();
