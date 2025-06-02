@@ -16,8 +16,16 @@ export async function handlerLogin(cmdName: string, ...args: string[]) {
     );
     process.exit(1);
   }
-  setUser(args[0]);
-  console.log(`${args[0]} has been set`);
+  try {
+    if ((await getUserByName(args[0])).name === args[0]) {
+      setUser(args[0]);
+      console.log(`${args[0]} has been set`);
+    } else {
+      console.log(`${args[0]} doesn't exist in the database`);
+    }
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 export async function handlerRegister(cmdName: string, ...args: string[]) {
@@ -27,7 +35,12 @@ export async function handlerRegister(cmdName: string, ...args: string[]) {
     );
     process.exit(1);
   }
-  createUser(args[0]);
+  try {
+    setUser((await createUser(args[0])).name);
+    console.log(`${args[0]} has been set`);
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 export function registerCommand(
