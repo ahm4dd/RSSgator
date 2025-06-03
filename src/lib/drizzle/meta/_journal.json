@@ -8,6 +8,13 @@
       "when": 1748880778949,
       "tag": "0000_giant_stick",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1748980332569,
+      "tag": "0001_bright_lethal_legion",
+      "breakpoints": true
     }
   ]
 }

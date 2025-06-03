@@ -1,5 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import { RSSFeed, RSSItem } from "./types";
+
 export async function fetchFeed(feedURL: string): Promise<RSSFeed> {
   const response = await fetch(feedURL, {
     method: "GET",
