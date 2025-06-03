@@ -14,7 +14,7 @@ async function main() {
 
   const args = process.argv.slice(2);
   if (args.length == 0) {
-    console.error("No arguements passed!");
+    console.log("No arguements passed!");
     process.exit(1);
   }
   try {
