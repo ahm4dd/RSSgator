@@ -1,4 +1,3 @@
-import { register } from "module";
 import { handlerAgg } from "./commands/agg";
 import {
   CommandsRegistry,
@@ -25,7 +24,7 @@ async function main() {
   registerCommand(commandsRegistry, "reset", handlerReset);
   registerCommand(commandsRegistry, "users", handlerUsers);
   registerCommand(commandsRegistry, "agg", handlerAgg);
-  registerCommand(commandsRegistry, "addFeed", handlerAddFeed);
+  registerCommand(commandsRegistry, "addfeed", handlerAddFeed);
 
   try {
     await runCommand(commandsRegistry, cmdName, ...cmdArgs);
@@ -37,7 +36,7 @@ async function main() {
     }
     process.exit(1);
   }
-  setTimeout(() => process.exit(0), 1000);
+  setTimeout(() => process.exit(0), 2000);
 }
 
 main();
