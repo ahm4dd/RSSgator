@@ -27,14 +27,10 @@ export async function getFeedByUrl(url: string) {
 // Helper functions
 
 function printFeed(feed: Feed, user: User) {
-  console.log(feed.id);
-  console.log(feed.url);
-  console.log(feed.name);
-  console.log(feed.user_id);
-  console.log(feed.createdAt);
-  console.log(feed.updatedAt);
-  console.log(user.id);
-  console.log(user.name);
-  console.log(user.createdAt);
-  console.log(user.updatedAt);
+  console.log(`* ID:            ${feed.id}`);
+  console.log(`* Created:       ${feed.createdAt}`);
+  console.log(`* Updated:       ${feed.updatedAt}`);
+  console.log(`* name:          ${feed.name}`);
+  console.log(`* URL:           ${feed.url}`);
+  console.log(`* User:          ${user.name}`);
 }
