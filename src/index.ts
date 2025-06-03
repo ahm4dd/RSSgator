@@ -1,28 +1,39 @@
-import process from "node:process";
 import {
+  CommandsRegistry,
   registerCommand,
-  handlerLogin,
   runCommand,
-  handlerRegister,
-} from "./commands";
-import { type CommandHandler, type CommandsRegistry } from "./commands";
+} from "./commands/commands";
+import { handlerReset } from "./commands/reset";
+import { handlerLogin, handlerRegister, handlerUsers } from "./commands/users";
 
 async function main() {
-  const commands: CommandsRegistry = {};
-  registerCommand(commands, "login", handlerLogin);
-  registerCommand(commands, "register", handlerRegister);
-
   const args = process.argv.slice(2);
-  if (args.length == 0) {
-    console.log("No arguements passed!");
+
+  if (args.length < 1) {
+    console.log("usage: cli <command> [args...]");
     process.exit(1);
   }
+
+  const cmdName = args[0];
+  const cmdArgs = args.slice(1);
+  const commandsRegistry: CommandsRegistry = {};
+
+  registerCommand(commandsRegistry, "login", handlerLogin);
+  registerCommand(commandsRegistry, "register", handlerRegister);
+  registerCommand(commandsRegistry, "reset", handlerReset);
+  registerCommand(commandsRegistry, "users", handlerUsers);
+
   try {
-    await runCommand(commands, args[0], args[1]);
-    setTimeout(() => process.exit(0), 5000);
-  } catch (e) {
-    console.error(`${e}`);
+    await runCommand(commandsRegistry, cmdName, ...cmdArgs);
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(`Error running command ${cmdName}: ${err.message}`);
+    } else {
+      console.error(`Error running command ${cmdName}: ${err}`);
+    }
+    process.exit(1);
   }
+  setTimeout(() => process.exit(0), 1000);
 }
 
 main();

@@ -1,14 +1,5 @@
-import { exitCode } from "node:process";
-import { setUser } from "./config";
-import { createUser, getUserByName } from "./lib/db/queries/users";
-import { create } from "node:domain";
-
-export type CommandHandler = (
-  cmdName: string,
-  ...args: string[]
-) => Promise<void>;
-export type CommandsRegistry = Record<string, CommandHandler>;
-
+import { readConfig, setUser } from "./../config";
+import { getUserByName, createUser, getUsers } from "../lib/db/queries/users";
 export async function handlerLogin(cmdName: string, ...args: string[]) {
   if (args.length != 1 || args[0] === undefined) {
     console.log("The login handler expects a single arguement, the username.");
@@ -25,6 +16,7 @@ export async function handlerLogin(cmdName: string, ...args: string[]) {
     }
   } catch (e) {
     console.log(e);
+    process.exit(1);
   }
 }
 
@@ -45,26 +37,20 @@ export async function handlerRegister(cmdName: string, ...args: string[]) {
     console.log(`${args[0]} has been set`);
   } catch (e) {
     console.log(e);
+    process.exit(1);
   }
 }
 
-export function registerCommand(
-  registry: CommandsRegistry,
-  cmdName: string,
-  handler: CommandHandler,
-) {
-  if (cmdName in registry) {
-    throw new Error(`${cmdName} already exists in the commands registry.`);
-  }
-  registry[cmdName] = handler;
-}
-
-export async function runCommand(
-  registry: CommandsRegistry,
-  cmdName: string,
-  ...args: string[]
-) {
-  if (cmdName in registry) {
-    registry[cmdName](cmdName, ...args);
+export async function handlerUsers(cmdName: string, ...args: string[]) {
+  try {
+    const users = await getUsers();
+    for (const user of users) {
+      if (user.name === readConfig().currentUserName)
+        console.log(`* ${user.name} (current)`);
+      else console.log(`* ${user.name}`);
+    }
+  } catch (e) {
+    console.log(e);
+    process.exit(1);
   }
 }

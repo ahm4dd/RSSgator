@@ -14,3 +14,12 @@ export async function getUserByName(name: string) {
     .where(sql`${users.name} = ${name}`);
   return result;
 }
+
+export async function truncateUsers() {
+  await db.delete(users);
+}
+
+export async function getUsers() {
+  const result = db.select().from(users);
+  return result;
+}
