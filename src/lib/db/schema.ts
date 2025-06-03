@@ -1,5 +1,3 @@
-import { foreignKey } from "drizzle-orm/gel-core";
-import { varchar } from "drizzle-orm/mysql-core";
 import { pgTable, timestamp, uuid, text } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
