@@ -11,6 +11,7 @@ export async function createFeedFollow(feed_id: string, user_id: string) {
     .select({
       userName: users.name,
       feedName: feeds.name,
+      feedUrl: feeds.url,
       ...getTableColumns(feed_follows),
     })
     .from(feed_follows)
