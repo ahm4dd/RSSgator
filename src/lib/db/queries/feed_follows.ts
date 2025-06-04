@@ -22,7 +22,7 @@ export async function createFeedFollow(feed_id: string, user_id: string) {
 }
 
 export async function getFeedFollowsForUser(user_id: string) {
-  const [result] = await db
+  const result = await db
     .select({
       userName: users.name,
       ...getTableColumns(feeds),

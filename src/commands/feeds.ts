@@ -22,8 +22,8 @@ export async function handlerFeeds(cmdName: string, ...args: string[]) {
   for (const feed of allFeeds) {
     const user = await getUserById(feed.user_id);
     console.log(`-------------------------------`);
-    console.log(`* name:          ${feed.name}`);
-    console.log(`* URL:           ${feed.url}`);
+    console.log(`* Name:          ${feed.name}`);
+    console.log(`* URL :          ${feed.url}`);
     console.log(`* User:          ${user.name}`);
     console.log(`-------------------------------`);
   }

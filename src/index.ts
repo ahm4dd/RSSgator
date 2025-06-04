@@ -9,6 +9,7 @@ import { handlerLogin, handlerRegister, handlerUsers } from "./commands/users";
 import { handlerAddFeed, handlerFeeds } from "./commands/feeds";
 import { register } from "module";
 import { handlerFollow } from "./commands/follow";
+import { handlerFollowing } from "./commands/following";
 async function main() {
   const args = process.argv.slice(2);
 
@@ -29,6 +30,7 @@ async function main() {
   registerCommand(commandsRegistry, "addfeed", handlerAddFeed);
   registerCommand(commandsRegistry, "feeds", handlerFeeds);
   registerCommand(commandsRegistry, "follow", handlerFollow);
+  registerCommand(commandsRegistry, "following", handlerFollowing);
 
   try {
     await runCommand(commandsRegistry, cmdName, ...cmdArgs);

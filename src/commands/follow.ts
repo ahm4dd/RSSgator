@@ -17,7 +17,7 @@ export async function handlerFollow(cmdName: string, ...args: string[]) {
     console.log(`-------------------------------`);
     console.log(`* Username :          ${feed_follow.userName}`);
     console.log(`* Feed name:          ${feed_follow.feedName}`);
-    console.log(`* URL:          ${feed_follow.feedUrl}`);
+    console.log(`* URL      :          ${feed_follow.feedUrl}`);
     console.log(`-------------------------------`);
   } catch (e) {
     console.log(e);
