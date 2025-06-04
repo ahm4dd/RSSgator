@@ -1,6 +1,7 @@
 import { addFeed, getAllFeeds } from "../lib/db/queries/feeds";
 import { Feed, User } from "./../lib/db/schema";
 import { getUserById } from "../lib/db/queries/users";
+import { handlerFollow } from "./follow";
 
 export async function handlerAddFeed(cmdName: string, ...args: string[]) {
   if (args.length !== 2 || args[1] === undefined) {
@@ -11,6 +12,7 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]) {
   }
   try {
     await addFeed(args[0], args[1]);
+    await handlerFollow("follow", args[1]);
   } catch (e) {
     console.log(e);
     process.exit(1);
