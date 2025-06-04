@@ -3,6 +3,7 @@ import { pgTable, timestamp, uuid, text } from "drizzle-orm/pg-core";
 
 export type Feed = typeof feeds.$inferSelect;
 export type User = typeof users.$inferSelect;
+export type FeedFollow = typeof feed_follows.$inferSelect;
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
