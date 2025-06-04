@@ -1,6 +1,6 @@
 import { db } from "..";
 import { feeds } from "../schema";
-import { getUserByName } from "./users";
+import { getUserByName, getUserById } from "./users";
 import { readConfig } from "../../../config";
 import { Feed, User } from "./.././../../lib/db/schema";
 import { sql } from "drizzle-orm";
@@ -17,11 +17,20 @@ export async function addFeed(name: string, url: string) {
 }
 
 export async function getFeedByUrl(url: string) {
-  const [result] = await db
+  const [feed] = await db
     .select()
     .from(feeds)
     .where(sql`${feeds.url} = ${url}`);
-  return result;
+  return feed;
+}
+
+export async function getAllFeeds() {
+  const allFeeds = await db.select().from(feeds);
+  return allFeeds;
+}
+
+export async function truncateFeeds() {
+  await db.delete(feeds);
 }
 
 // Helper functions

@@ -1,3 +1,4 @@
+import { truncateFeeds } from "../lib/db/queries/feeds";
 import { truncateUsers } from "../lib/db/queries/users";
 export async function handlerReset(cmdName: string, ...args: string[]) {
   if (args.length != 0) {
@@ -5,5 +6,6 @@ export async function handlerReset(cmdName: string, ...args: string[]) {
     process.exit(1);
   } else {
     await truncateUsers();
+    await truncateFeeds();
   }
 }
