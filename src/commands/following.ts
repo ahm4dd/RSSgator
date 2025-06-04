@@ -1,12 +1,15 @@
 import { readConfig } from "../config";
 import { getFeedFollowsForUser } from "../lib/db/queries/feed_follows";
 import { getUserByName } from "../lib/db/queries/users";
+import { User } from "../lib/db/schema";
 
-export async function handlerFollowing(cmdName: string, ...args: string[]) {
+export async function handlerFollowing(
+  cmdName: string,
+  user: User,
+  ...args: string[]
+) {
   try {
-    const feedsForCurrentUser = await getFeedFollowsForUser(
-      (await getUserByName(readConfig().currentUserName)).id,
-    );
+    const feedsForCurrentUser = await getFeedFollowsForUser(user.id);
     setTimeout(() => {
       for (const feed of feedsForCurrentUser) {
         console.log(`-------------------------------`);

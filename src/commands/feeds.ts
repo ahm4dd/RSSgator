@@ -1,9 +1,14 @@
 import { addFeed, getAllFeeds } from "../lib/db/queries/feeds";
-import { Feed, User } from "./../lib/db/schema";
-import { getUserById } from "../lib/db/queries/users";
+import { getUserById, getUserByName } from "../lib/db/queries/users";
 import { handlerFollow } from "./follow";
+import { readConfig } from "../config";
+import { User } from "../lib/db/schema";
 
-export async function handlerAddFeed(cmdName: string, ...args: string[]) {
+export async function handlerAddFeed(
+  cmdName: string,
+  user: User,
+  ...args: string[]
+) {
   if (args.length !== 2 || args[1] === undefined) {
     console.log(
       "The addFeed command expects 2 arguements, the name, and the url.",
@@ -12,7 +17,7 @@ export async function handlerAddFeed(cmdName: string, ...args: string[]) {
   }
   try {
     await addFeed(args[0], args[1]);
-    await handlerFollow("follow", args[1]);
+    await handlerFollow("follow", user, args[1]);
   } catch (e) {
     console.log(e);
     process.exit(1);
