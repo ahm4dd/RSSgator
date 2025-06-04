@@ -20,3 +20,16 @@ export async function createFeedFollow(feed_id: string, user_id: string) {
     .where(sql`${feed_follows.id} = ${newFeedFollow.id}`);
   return result;
 }
+
+export async function getFeedFollowsForUser(user_id: string) {
+  const [result] = await db
+    .select({
+      userName: users.name,
+      ...getTableColumns(feeds),
+    })
+    .from(feed_follows)
+    .innerJoin(feeds, sql`${feed_follows.feed_id} = ${feeds.id}`)
+    .innerJoin(users, sql`${feed_follows.user_id} = ${users.id}`)
+    .where(sql`${feed_follows.user_id} = ${user_id}`);
+  return result;
+}
