@@ -16,7 +16,7 @@ export async function createFeedFollow(feed_id: string, user_id: string) {
     })
     .from(feed_follows)
     .innerJoin(users, sql`${feed_follows.user_id} = ${users.id}`)
-    .innerJoin(feeds, sql`${feed_follows.user_id} = ${feeds.id}`)
+    .innerJoin(feeds, sql`${feed_follows.feed_id} = ${feeds.id}`)
     .where(sql`${feed_follows.id} = ${newFeedFollow.id}`);
   return result;
 }

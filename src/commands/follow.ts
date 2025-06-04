@@ -1,5 +1,6 @@
 import { readConfig } from "../config";
 import { createFeedFollow } from "../lib/db/queries/feed_follows";
+import { getFeedByUrl } from "../lib/db/queries/feeds";
 import { getUserByName } from "../lib/db/queries/users";
 
 export async function handlerFollow(cmdName: string, ...args: string[]) {
@@ -11,14 +12,16 @@ export async function handlerFollow(cmdName: string, ...args: string[]) {
   }
   try {
     const feed_follow = await createFeedFollow(
-      args[0],
+      (await getFeedByUrl(args[0])).id,
       (await getUserByName(readConfig().currentUserName)).id,
     );
-    console.log(`-------------------------------`);
-    console.log(`* Username :          ${feed_follow.userName}`);
-    console.log(`* Feed name:          ${feed_follow.feedName}`);
-    console.log(`* URL      :          ${feed_follow.feedUrl}`);
-    console.log(`-------------------------------`);
+    setTimeout(() => {
+      console.log(`-------------------------------`);
+      console.log(`* Username :          ${feed_follow.userName}`);
+      console.log(`* Feed name:          ${feed_follow.feedName}`);
+      console.log(`* URL      :          ${feed_follow.feedUrl}`);
+      console.log(`-------------------------------`);
+    }, 1000);
   } catch (e) {
     console.log(e);
     process.exit(1);
