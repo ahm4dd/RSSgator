@@ -1,6 +1,7 @@
 import { db } from "..";
 import { feed_follows, feeds, users } from "../schema";
 import { sql, getTableColumns } from "drizzle-orm";
+import { getFeedByUrl, getFeedById } from "./feeds";
 
 export async function createFeedFollow(feed_id: string, user_id: string) {
   const [newFeedFollow] = await db
@@ -32,4 +33,16 @@ export async function getFeedFollowsForUser(user_id: string) {
     .innerJoin(users, sql`${feed_follows.user_id} = ${users.id}`)
     .where(sql`${feed_follows.user_id} = ${user_id}`);
   return result;
+}
+
+export async function deleteFeedFollowForUser(
+  user_id: string,
+  feed_url: string,
+) {
+  const feed = await getFeedByUrl(feed_url);
+  await db
+    .delete(feed_follows)
+    .where(
+      sql`${feed_follows.user_id} = ${user_id} AND ${feed_follows.feed_id}= ${feed.id}`,
+    );
 }

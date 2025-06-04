@@ -24,6 +24,14 @@ export async function getFeedByUrl(url: string) {
   return feed;
 }
 
+export async function getFeedById(feed_id: string) {
+  const [feed] = await db
+    .select()
+    .from(feeds)
+    .where(sql`${feeds.id} = ${feed_id}`);
+  return feed;
+}
+
 export async function getAllFeeds() {
   const allFeeds = await db.select().from(feeds);
   return allFeeds;
