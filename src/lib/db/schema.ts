@@ -1,3 +1,4 @@
+import { timeStamp } from "console";
 import { pgTable, timestamp, uuid, text } from "drizzle-orm/pg-core";
 
 export type Feed = typeof feeds.$inferSelect;
@@ -25,4 +26,21 @@ export const feeds = pgTable("feeds", {
   user_id: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+});
+
+export const feed_follows = pgTable("feed_follows", {
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+  user_id: uuid("user_id")
+    .notNull()
+    .unique()
+    .references(() => users.id, { onDelete: "cascade" }),
+  feed_id: uuid("feed_id")
+    .notNull()
+    .unique()
+    .references(() => feeds.id, { onDelete: "cascade" }),
 });
