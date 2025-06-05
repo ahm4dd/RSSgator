@@ -8,7 +8,7 @@ export async function createPost(post: NewPost) {
   return result;
 }
 
-export async function getPostsForUser(user_id: string) {
+export async function getPostsForUser(user_id: string, limit: number) {
   const result = db
     .select({
       ...getTableColumns(posts),
@@ -17,6 +17,7 @@ export async function getPostsForUser(user_id: string) {
     .from(posts)
     .innerJoin(feeds, sql`${posts.feed_id} = ${feeds.id}`)
     .innerJoin(users, sql`${feeds.user_id} = ${users.id}`)
-    .where(sql`${users.id} = ${user_id}`);
+    .where(sql`${users.id} = ${user_id}`)
+    .limit(limit);
   return result;
 }
