@@ -3,7 +3,7 @@ import { feeds } from "../schema";
 import { getUserByName, getUserById } from "./users";
 import { readConfig } from "../../../config";
 import { Feed, User } from "./.././../../lib/db/schema";
-import { sql } from "drizzle-orm";
+import { sql, asc } from "drizzle-orm";
 
 export async function addFeed(name: string, url: string) {
   const user = await getUserByName(readConfig().currentUserName);
@@ -21,6 +21,14 @@ export async function markFeedFetched(feed_id: string) {
     .update(feeds)
     .set({ updatedAt: new Date(), last_fetched_at: new Date() })
     .where(sql`${feeds.id} = ${feed_id}`);
+}
+
+export async function getNextFeedToFetch() {
+  const [feed] = await db
+    .select()
+    .from(feeds)
+    .orderBy(sql`${feeds.last_fetched_at} asc null first limit 1`);
+  return feed;
 }
 
 export async function getFeedByUrl(url: string) {
