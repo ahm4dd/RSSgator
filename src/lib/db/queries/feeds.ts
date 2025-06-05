@@ -16,6 +16,13 @@ export async function addFeed(name: string, url: string) {
   printFeed(feed, user);
 }
 
+export async function markFeedFetched(feed_id: string) {
+  await db
+    .update(feeds)
+    .set({ updatedAt: new Date(), last_fetched_at: new Date() })
+    .where(sql`${feeds.id} = ${feed_id}`);
+}
+
 export async function getFeedByUrl(url: string) {
   const [feed] = await db
     .select()
