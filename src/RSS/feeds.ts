@@ -1,7 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 import { RSSFeed, RSSItem } from "./types";
 import { getNextFeedToFetch, markFeedFetched } from "../lib/db/queries/feeds";
-
+import { Feed } from "../lib/db/schema";
 export async function fetchFeed(feedURL: string) {
   const res = await fetch(feedURL, {
     headers: {
@@ -109,12 +109,21 @@ export async function fetchFeed(feedURL: string) {
 // }
 
 export async function scrapeFeeds() {
-  const nextFeed = await getNextFeedToFetch();
-  await markFeedFetched(nextFeed.id);
-  const fetchedFeed = await fetchFeed(nextFeed.url);
-  for (const item of fetchedFeed.channel.item) {
-    console.log("-----------------");
-    console.log(`${item.title}`);
-    console.log("-----------------");
+  const feed = await getNextFeedToFetch();
+  if (!feed) {
+    console.log(`No feeds to fetch.`);
+    return;
   }
+  console.log(`Found a feed to fetch!`);
+  scrapeFeed(feed);
+}
+
+async function scrapeFeed(feed: Feed) {
+  await markFeedFetched(feed.id);
+
+  const feedData = await fetchFeed(feed.url);
+
+  console.log(
+    `Feed ${feed.name} collected, ${feedData.channel.item.length} posts found`,
+  );
 }

@@ -16,19 +16,24 @@ export async function addFeed(name: string, url: string) {
   printFeed(feed, user);
 }
 
-export async function markFeedFetched(feed_id: string) {
-  await db
+export async function markFeedFetched(feedId: string) {
+  const result = await db
     .update(feeds)
-    .set({ updatedAt: new Date(), last_fetched_at: new Date() })
-    .where(sql`${feeds.id} = ${feed_id}`);
+    .set({
+      last_fetched_at: new Date(),
+    })
+    .where(sql`${feeds.id} = ${feedId}`)
+    .returning();
+  return result;
 }
 
 export async function getNextFeedToFetch() {
-  const [feed] = await db
+  const [result] = await db
     .select()
     .from(feeds)
-    .orderBy(sql`${feeds.last_fetched_at} asc null first limit 1`);
-  return feed;
+    .orderBy(sql`${feeds.last_fetched_at} desc nulls first`)
+    .limit(1);
+  return result;
 }
 
 export async function getFeedByUrl(url: string) {
