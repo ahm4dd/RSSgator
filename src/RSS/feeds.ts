@@ -1,5 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import { RSSFeed, RSSItem } from "./types";
+import { getNextFeedToFetch, markFeedFetched } from "../lib/db/queries/feeds";
 
 export async function fetchFeed(feedURL: string) {
   const res = await fetch(feedURL, {
@@ -58,7 +59,9 @@ export async function fetchFeed(feedURL: string) {
       item: rssItems,
     },
   };
+  return rss;
 }
+
 // export async function fetchFeed(feedURL: string): Promise<RSSFeed> {
 //   const response = await fetch(feedURL, {
 //     method: "GET",
@@ -104,3 +107,14 @@ export async function fetchFeed(feedURL: string) {
 //   }
 //   return result;
 // }
+
+export async function scrapeFeeds() {
+  const nextFeed = await getNextFeedToFetch();
+  await markFeedFetched(nextFeed.id);
+  const fetchedFeed = await fetchFeed(nextFeed.url);
+  for (const item of fetchedFeed.channel.item) {
+    console.log("-----------------");
+    console.log(`${item.title}`);
+    console.log("-----------------");
+  }
+}
